@@ -73,8 +73,8 @@ class VRS():
         return self.m_coords
         
 def main():
-    cap = cv.VideoCapture(0)
-    vr = VRS(model_loc="yolov11n-face.pt")
+    cap = cv.VideoCapture(1)
+    vr = VRS(model_loc="yolo11n.pt")
     while True:
         suc, frame = cap.read()
         abcd, items = vr.predict(frame, img_flip=True)

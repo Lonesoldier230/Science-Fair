@@ -172,7 +172,7 @@ def Game():
                 pygame.quit()
                 sys.exit()
         suc, fram = cap.read()
-        vr.predict(fram, img_flip=True)
+        vr.predict(fram, img_flip=True, device="cpu")
         img = cv.cvtColor(vr.img, cv.COLOR_BGR2RGB)
         pyimg = pygame.transform.smoothscale(pygame.image.frombuffer(img.tobytes(),(img.shape[1], img.shape[0]), "RGB"), (SCREEN_WIDTH, SCREEN_HEIGHT))
         screen.blit(pyimg, (0,0))
