@@ -2,8 +2,6 @@ import pygame
 import cv2 as cv
 import numpy as np
 import random
-
-import pygame.locals
 from modules.ML_video import VRS
 import sys
 from modules.utilities import Button, Storage
