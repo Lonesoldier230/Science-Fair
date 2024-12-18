@@ -2,6 +2,8 @@ import pygame
 import cv2 as cv
 import numpy as np
 import random
+
+import pygame.locals
 from modules.ML_video import VRS
 import sys
 from modules.utilities import Button, Storage
@@ -12,7 +14,7 @@ SCREEN_HEIGHT = 1080/2
 SCREEN_WIDTH = 1920/2
 BIRD_X = SCREEN_HEIGHT/2
 BUILDING = pygame.image.load("./resources/game/building1.png")
-BIRD_IMG = pygame.transform.scale(pygame.image.load("./resources/game/airplane.png"), (48,48))
+BIRD_IMG = pygame.transform.scale(pygame.image.load("./resources/game/airplane.png"), (48,29))
 PIPE_GAP = 150
 PIPE_WIDTH = 70
 PIPE_SPEED = -4
@@ -69,8 +71,8 @@ def MainMenu():
     high_score = f"High Score: {data.high_score}"
     
     bg_img = pygame.image.load("./resources/mainmenu/main_menu.jpg")
-    new_game = Button(pygame.image.load("./resources/mainmenu/new_game.png"), ((SCREEN_WIDTH/2)+50, (SCREEN_HEIGHT/2)+50), scale=3)
-    quit_game = Button(pygame.image.load("./resources/mainmenu/quit_game.png"), ((SCREEN_WIDTH/2)-50 - (new_game.img.get_width()//3), (SCREEN_HEIGHT/2)+50), scale=3)
+    new_game = Button(pygame.image.load("./resources/mainmenu/new_game.png"), ((SCREEN_WIDTH/2)+50, (SCREEN_HEIGHT/2)+50), scale=3, hover_img=pygame.image.load("./resources/mainmenu/new_game_highlighted.png"))
+    quit_game = Button(pygame.image.load("./resources/mainmenu/quit_game.png"), ((SCREEN_WIDTH/2)-50 - (new_game.img.get_width()//3), (SCREEN_HEIGHT/2)+50), scale=3, hover_img=pygame.image.load("./resources/mainmenu/quit_game_highlighted.png"))
     highest_score_text = pygame.font.SysFont("Arial", 45)
     highest_score = highest_score_text.render(str(high_score), True, (255, 255, 255))
     Name_font = pygame.font.SysFont("Arial", 50)
@@ -78,6 +80,8 @@ def MainMenu():
     while running:
         pos = pygame.mouse.get_pos()
         
+        new_game.hover(pos)
+        quit_game.hover(pos)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -123,16 +127,20 @@ def GameOver():
     clock = pygame.time.Clock()
     running = True
     
-    new = Button(pygame.image.load("./resources/gameover/New.png"),((SCREEN_WIDTH/2)+50, (SCREEN_HEIGHT/2)+50) , scale=3)
+    new = Button(pygame.image.load("./resources/gameover/New.png"),((SCREEN_WIDTH/2)+50, (SCREEN_HEIGHT/2)+50) , scale=3, hover_img=pygame.image.load("./resources/gameover/New_highlight.png"))
+    qui = Button(pygame.image.load("./resources/gameover/Quit.png"), ((SCREEN_WIDTH/2)-50 - (new.img.get_width()//3), (SCREEN_HEIGHT/2)+50), scale=3, hover_img=pygame.image.load("./resources/gameover/Quit_highlight.png"))
     score_font = pygame.font.SysFont("Arial", 40)
     score_text = score_font.render(str(data.score),True, (14, 165, 218))
-    qui = Button(pygame.image.load("./resources/gameover/Quit.png"), ((SCREEN_WIDTH/2)-50 - (new.img.get_width()//3), (SCREEN_HEIGHT/2)+50), scale=3)
     bg_img = pygame.image.load("./resources/gameover/gameover_bg.jpeg")
     font = pygame.font.SysFont("Arial", 80)
     text = font.render("Game Over", True, (255, 255, 255))
     
     while running:
         mouse_pos = pygame.mouse.get_pos()
+
+        new.hover(mouse_pos=mouse_pos)
+        qui.hover(mouse_pos=mouse_pos)
+        
         screen.blit(pygame.transform.scale(bg_img, (SCREEN_WIDTH, SCREEN_HEIGHT)), (0,0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -172,7 +180,7 @@ def Game():
                 pygame.quit()
                 sys.exit()
         suc, fram = cap.read()
-        vr.predict(fram, img_flip=True, device="cpu")
+        vr.predict(fram, img_flip=True, device="mps")
         img = cv.cvtColor(vr.img, cv.COLOR_BGR2RGB)
         pyimg = pygame.transform.smoothscale(pygame.image.frombuffer(img.tobytes(),(img.shape[1], img.shape[0]), "RGB"), (SCREEN_WIDTH, SCREEN_HEIGHT))
         screen.blit(pyimg, (0,0))

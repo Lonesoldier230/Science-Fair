@@ -3,19 +3,31 @@ import pygame
 import numpy as np
 
 class Button():
-    def __init__(self, img, pos:tuple,scale:float=1) -> None:
+    def __init__(self, img, pos:tuple,scale:float=1, hover_img=None) -> None:
         self.img = img
         self.position = tuple(map(int, pos))
         self.resize = pygame.transform.scale(img, (img.get_width()//scale, img.get_height()//scale))
+        if hover_img != None:
+            self.hover_img = pygame.transform.scale(hover_img, (hover_img.get_width()//scale, hover_img.get_height()//scale))
+        self.active_img = self.resize
         
     def update(self, screen):
-        screen.blit(self.resize, self.position)
+        screen.blit(self.active_img, self.position)
     
     def IsPressed(self, mouse_pos:tuple):
         mouse_pos = list(map(int, mouse_pos))
         if mouse_pos[0] in range(self.position[0], self.position[0]+self.resize.get_width()) and mouse_pos[1] in range(self.position[1], self.position[1]+self.resize.get_height()):
             return True
         return False
+    
+    def hover(self, mouse_pos:tuple) -> int:
+        mouse_pos = list(map(int, mouse_pos))
+        if mouse_pos[0] in range(self.position[0], self.position[0]+self.resize.get_width()) and mouse_pos[1] in range(self.position[1], self.position[1]+self.resize.get_height()):
+            self.active_img = self.hover_img
+            return 0;
+        self.active_img = self.resize
+        return 0
+            
     
 class Storage():
     def __init__(self) -> None:
