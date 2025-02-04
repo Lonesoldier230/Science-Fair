@@ -5,6 +5,7 @@ import numpy as np
 from math import sqrt
 
 class VRS():
+    NO_MAX_IMG = -1
     
     def __init__(self, model_loc:str, scale:int=0.5, limit:int=2):
         self.scale = scale
@@ -71,16 +72,34 @@ class VRS():
             m_coord = (sqrt(int((i[2]+i[0])/2)**2), sqrt(int((i[3]+i[1])/2)**2))
             self.m_coords.append(m_coord)
         return self.m_coords
+    
+    @property
+    def max_obj(self):
+        distance = []
+        for i in self.abcd:
+            distance.append(int(sqrt((int(i[2]-i[0])**2) + (int(i[3]-i[1])**2))))
+        
+        if distance != []:
+            if len(distance) > 1:
+                self.max_img_size = max(distance)
+            else:
+                self.max_img_size = distance[0]
+            
+            return self.mid_coords[distance.index(self.max_img_size)]
+        else:
+            return None
+            
+            
         
 def main():
-    cap = cv.VideoCapture(1)
-    vr = VRS(model_loc="yolo11n.pt")
+    cap = cv.VideoCapture(0)
+    vr = VRS(model_loc="./ML_algorithm/yolov11n-face.pt")
     while True:
         suc, frame = cap.read()
         abcd, items = vr.predict(frame, img_flip=True)
         img = vr.plot()
         cv.imshow("VRS", img)
-        print(vr.mid_coords)
+        print(vr.max_obj)
         if cv.waitKey(1) == ord("q"):
             break
 

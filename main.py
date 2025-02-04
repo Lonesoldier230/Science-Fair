@@ -184,7 +184,7 @@ def Game():
         screen.blit(pyimg, (0,0))
 
         try:
-            m_coords = vr.mid_coords[:1][0]
+            m_coords = vr.max_obj
             
             bird.update(m_coords[0]*2, m_coords[1]*2)
             print(bird.x, bird.y)
