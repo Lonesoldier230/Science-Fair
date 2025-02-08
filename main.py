@@ -8,6 +8,7 @@ from modules.utilities import Button, Storage
 
 pygame.init()
 
+VIDEO_SCALE = 0.25
 SCREEN_HEIGHT = 1080/2
 SCREEN_WIDTH = 1920/2
 BIRD_X = SCREEN_HEIGHT/2
@@ -41,7 +42,7 @@ class Bird:
 class Pipe:
     def __init__(self, x):
         self.x = x
-        self.height = random.randint(100, SCREEN_HEIGHT - PIPE_GAP - 100)
+        self.height = random.randint(100, int(SCREEN_HEIGHT - PIPE_GAP - 100))
         self.passed = False
 
     def update(self):
@@ -162,10 +163,13 @@ def GameOver():
     
 
 def Game():
-    vr = VRS("./ML_algorithm/yolov11n-face.pt", scale=0.25)
+    vr = VRS("./ML_algorithm/yolov11n-face.pt", scale=VIDEO_SCALE)
     cap = cv.VideoCapture(0)
     cap.set(cv.CAP_PROP_FRAME_WIDTH, 1920)
     cap.set(cv.CAP_PROP_FRAME_HEIGHT, 1080)
+    cam_height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+    multiplier = int(SCREEN_HEIGHT/(cam_height*VIDEO_SCALE))
+    
     global data
     clock = pygame.time.Clock()
     bird = Bird()
@@ -188,7 +192,7 @@ def Game():
         try:
             m_coords = vr.max_obj
             
-            bird.update(m_coords[0]*2, m_coords[1]*2)
+            bird.update(m_coords[0]*multiplier, m_coords[1]*multiplier)
             print(bird.x, bird.y)
         except:
             bird.update(bird.x, bird.y)

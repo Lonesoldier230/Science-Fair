@@ -32,9 +32,12 @@ class VRS():
         results= self.model.predict(source=self.resize, conf=0.5, device=device, stream=True)
         
         for r in results:
-            for i, (x, y, w, h) in enumerate(np.uint32(r.boxes.xywh.cpu().numpy())):
-                self.abcd.append((x-w//2, y-h//2, x+w//2, y+h//2))
-                self.predicted_items.append(r.names[int(r.boxes.cls.cpu().numpy()[i])])
+            boxes = r.boxes.xywh.cpu().numpy().astype(int)
+            classes = r.boxes.cls.cpu().numpy().astype(int)
+
+            for (x, y, w, h), cls in zip(boxes, classes):
+                self.abcd.append((x - w // 2, y - h // 2, x + w // 2, y + h // 2))
+                self.predicted_items.append(r.names[cls])
         
         return self.abcd, self.predicted_items
     
@@ -69,25 +72,19 @@ class VRS():
     def mid_coords(self):
         self.m_coords = []
         for i in self.abcd:
-            m_coord = (sqrt(int((i[2]+i[0])/2)**2), sqrt(int((i[3]+i[1])/2)**2))
+            m_coord = (int((i[2]+i[0])/2), int((i[3]+i[1])/2))
             self.m_coords.append(m_coord)
         return self.m_coords
     
     @property
     def max_obj(self):
-        distance = []
-        for i in self.abcd:
-            distance.append(int(sqrt((int(i[2]-i[0])**2) + (int(i[3]-i[1])**2))))
-        
-        if distance != []:
-            if len(distance) > 1:
-                self.max_img_size = max(distance)
-            else:
-                self.max_img_size = distance[0]
-            
-            return self.mid_coords[distance.index(self.max_img_size)]
-        else:
+        if not self.abcd:
             return None
+
+        distances = [sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) for x1, y1, x2, y2 in self.abcd]
+        max_index = np.argmax(distances)
+
+        return self.mid_coords[max_index] if distances else None
             
             
         
