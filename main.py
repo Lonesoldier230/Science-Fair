@@ -164,6 +164,8 @@ def GameOver():
 def Game():
     vr = VRS("./ML_algorithm/yolov11n-face.pt", scale=0.25)
     cap = cv.VideoCapture(0)
+    cap.set(cv.CAP_PROP_FRAME_WIDTH, 1920)
+    cap.set(cv.CAP_PROP_FRAME_HEIGHT, 1080)
     global data
     clock = pygame.time.Clock()
     bird = Bird()

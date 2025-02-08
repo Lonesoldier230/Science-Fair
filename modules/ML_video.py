@@ -93,7 +93,7 @@ class VRS():
         
 def main():
     cap = cv.VideoCapture(0)
-    vr = VRS(model_loc="./ML_algorithm/yolov11n-face.pt")
+    vr = VRS(model_loc="./ML_algorithm/yolo11n.pt", limit=10)
     while True:
         suc, frame = cap.read()
         abcd, items = vr.predict(frame, img_flip=True)
