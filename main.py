@@ -9,14 +9,14 @@ from modules.utilities import Button, Storage
 pygame.init()
 
 VIDEO_SCALE = 0.25
-SCREEN_HEIGHT = 1080/2
-SCREEN_WIDTH = 1920/2
+SCREEN_HEIGHT = 1080//2
+SCREEN_WIDTH = 1920//2
 BIRD_X = SCREEN_HEIGHT/2
 BUILDING = pygame.image.load("./resources/game/building1.png")
 BIRD_IMG = pygame.transform.scale(pygame.image.load("./resources/game/airplane.png"), (48,29))
 PIPE_GAP = 150
 PIPE_WIDTH = 70
-PIPE_SPEED = -4
+PIPE_SPEED = -10
 FPS = 60
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
