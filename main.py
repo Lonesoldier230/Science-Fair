@@ -1,6 +1,5 @@
 import pygame
 import cv2 as cv
-import numpy as np
 import random
 from modules.ML_video import VRS
 import sys
@@ -16,7 +15,7 @@ BUILDING = pygame.image.load("./resources/game/building1.png")
 BIRD_IMG = pygame.transform.scale(pygame.image.load("./resources/game/airplane.png"), (48,29))
 PIPE_GAP = 150
 PIPE_WIDTH = 70
-PIPE_SPEED = -10
+PIPE_SPEED = -8
 FPS = 60
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

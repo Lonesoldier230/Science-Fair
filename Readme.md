@@ -1,5 +1,3 @@
-Certainly! Here's a **README** that highlights the changes made to optimize your code for **Windows**:
-
 ---
 
 # **VRS Optimization for Windows**
